@@ -1,0 +1,35 @@
+version: 1.3.0
+
+services:
+  - php:
+      version: 7.4
+
+events:
+  build:
+    steps:
+      - bootstrap:
+          type: script
+          script:
+            - composer install
+      - validate:
+          type: script
+          script:
+            - vendor/bin/phpcs
+            - vendor/bin/phpunit
+      - build:
+          type: script
+          script:
+            - composer install --no-dev --optimize-autoloader
+            - [ADD YOUR THEME BUILD STEPS HERE]
+
+  pr-merged:
+    steps:
+      - deploy:
+          script:
+            - pipelines-deploy
+
+  pr-closed:
+    steps:
+      - deploy:
+          script:
+            - pipelines-deploy
